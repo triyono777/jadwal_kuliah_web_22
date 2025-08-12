@@ -34,3 +34,7 @@ Catatan ringkas setiap perubahan penting agar dapat dianalisis AI untuk memahami
 
 - [6e37419] Chore: install frontend deps and update lockfile for chart/pdf/excel.
   - Memasang `react-chartjs-2`, `chart.js`, `jspdf`, `jspdf-autotable`, `xlsx`, `file-saver`.
+
+- [8004c05] UI/Backend: human-readable schedule, fitness explanation, and explicit GA params.
+  - Backend: menambah `hasil_readable` (nama entitas) dan `fitness_explanation`.
+  - Frontend: menampilkan jadwal readable, parameter G/N/p_m/k, dan penjelasan fitness.
