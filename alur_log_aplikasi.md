@@ -31,3 +31,6 @@ Catatan ringkas setiap perubahan penting agar dapat dianalisis AI untuk memahami
 - [b8bf601] Feature: summary, fitness convergence chart, and export (PDF/Excel).
   - Backend mengembalikan `summary` (memuat parameter) dan `fitness_history`.
   - Frontend menampilkan summary, grafik konvergensi (Chart.js), ekspor PDF (jsPDF) & Excel (xlsx).
+
+- [6e37419] Chore: install frontend deps and update lockfile for chart/pdf/excel.
+  - Memasang `react-chartjs-2`, `chart.js`, `jspdf`, `jspdf-autotable`, `xlsx`, `file-saver`.
