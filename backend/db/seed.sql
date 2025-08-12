@@ -16,8 +16,8 @@ INSERT INTO kelas_matkul (id_kelas, id_matkul) VALUES
 
 INSERT INTO ruangan (nama, jenis, kapasitas) VALUES
  ('R-101', 'teori', 40),
- ('R-102', 'teori', 35),
- ('LAB-1', 'lab', 30);
+ ('R-102', 'teori', 45),
+ ('LAB-1', 'lab', 40);
 
 INSERT INTO slot_waktu (hari, waktu_mulai, waktu_selesai) VALUES
  ('Senin', '07:00', '09:00'),
@@ -25,7 +25,8 @@ INSERT INTO slot_waktu (hari, waktu_mulai, waktu_selesai) VALUES
  ('Selasa', '07:00', '09:00'),
  ('Selasa', '09:00', '11:00');
 
+-- Kosongkan preferensi kesediaan dosen untuk menghindari penalti S2
 INSERT INTO dosen (nama, batas_sks, kesediaan, keahlian_matkul_ids) VALUES
- ('Ani', 12, '{"Senin": ["07:00-09:00", "09:00-11:00"], "Selasa": ["07:00-09:00"]}', ARRAY[1,2]),
- ('Budi', 12, '{"Senin": ["09:00-11:00"], "Selasa": ["09:00-11:00"]}', ARRAY[2,3]),
- ('Citra', 12, '{"Senin": ["07:00-09:00"], "Selasa": ["07:00-09:00", "09:00-11:00"]}', ARRAY[1,3]);
+ ('Ani', 12, '{}'::jsonb, ARRAY[1,2]),
+ ('Budi', 12, '{}'::jsonb, ARRAY[2,3]),
+ ('Citra', 12, '{}'::jsonb, ARRAY[1,3]);
