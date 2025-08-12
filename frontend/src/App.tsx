@@ -61,6 +61,12 @@ export default function App() {
     }
   }, [result])
 
+  const makeTimestamp = () => {
+    const d = new Date()
+    const pad = (n: number) => String(n).padStart(2, '0')
+    return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}`
+  }
+
   const exportPDF = () => {
     if (!result) return
     const doc = new jsPDF()
@@ -77,7 +83,7 @@ export default function App() {
     })
 
     // Simpan
-    doc.save('jadwal_kuliah.pdf')
+    doc.save(`jadwal_kuliah_${makeTimestamp()}.pdf`)
   }
 
   const exportExcel = () => {
@@ -93,7 +99,7 @@ export default function App() {
     const ws = XLSX.utils.aoa_to_sheet(sheetData)
     XLSX.utils.book_append_sheet(wb, ws, 'Jadwal')
     const wbout = XLSX.write(wb, { type: 'array', bookType: 'xlsx' })
-    saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'jadwal_kuliah.xlsx')
+    saveAs(new Blob([wbout], { type: 'application/octet-stream' }), `jadwal_kuliah_${makeTimestamp()}.xlsx`)
   }
 
   const applyPreset = (p: {G:number,N:number,p_m:number,k:number}) => {
