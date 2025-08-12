@@ -16,7 +16,7 @@ Aplikasi optimasi jadwal kuliah menggunakan kombinasi CSP dan Algoritma Genetika
 1. Buat virtualenv dan install dependensi:
    ```bash
    cd backend
-   python -m venv .venv && source .venv/bin/activate
+   python3 -m venv .venv && source .venv/bin/activate
    pip install -r requirements.txt
    ```
 2. Salin environment:
