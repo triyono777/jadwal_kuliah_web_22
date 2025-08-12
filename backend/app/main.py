@@ -91,6 +91,14 @@ def generate(params: GAParams):
         "Pelanggaran lunak: kapasitas ruang kurang dan ketidaksesuaian preferensi waktu dosen."
     )
 
+    expected_total = len(data.kelas_matkul)
+    generated_total = len(hasil)
+    schedule_count_ok = (generated_total == expected_total)
+    schedule_count_message = (
+        f"Total jadwal seharusnya {expected_total}, tergenerate {generated_total}. "
+        + ("Sesuai." if schedule_count_ok else "Tidak sesuai, periksa integritas data/algoritma.")
+    )
+
     return GenerateResponse(
         params=params,
         hasil=hasil,
@@ -99,6 +107,10 @@ def generate(params: GAParams):
         summary=summary,
         fitness_history=history,
         fitness_explanation=fitness_explanation,
+        expected_total=expected_total,
+        generated_total=generated_total,
+        schedule_count_ok=schedule_count_ok,
+        schedule_count_message=schedule_count_message,
     )
 
 

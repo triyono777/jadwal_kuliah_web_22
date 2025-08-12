@@ -40,6 +40,10 @@ export type GenerateResponse = {
   summary: string
   fitness_history: number[]
   fitness_explanation: string
+  expected_total: number
+  generated_total: number
+  schedule_count_ok: boolean
+  schedule_count_message: string
 }
 
 const API_BASE = 'http://localhost:8000'

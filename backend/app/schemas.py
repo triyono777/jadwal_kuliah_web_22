@@ -47,6 +47,10 @@ class GenerateResponse(BaseModel):
     summary: str
     fitness_history: List[float]
     fitness_explanation: str
+    expected_total: int
+    generated_total: int
+    schedule_count_ok: bool
+    schedule_count_message: str
 
 
 class Preset(BaseModel):

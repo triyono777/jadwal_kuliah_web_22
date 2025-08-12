@@ -161,6 +161,9 @@ export default function App() {
           <div>Pelanggaran keras: {result.evaluasi.pelanggaran_keras} | lunak: {result.evaluasi.pelanggaran_lunak}</div>
           <div>Parameter: G={result.params.max_generations}, N={result.params.population_size}, p_m={result.params.mutation_rate}, k={result.params.tournament_size}</div>
           <p style={{marginTop: 8}}><i>{result.fitness_explanation}</i></p>
+          <div style={{marginTop: 8, color: result.schedule_count_ok ? '#16a34a' : '#dc2626'}}>
+            {result.schedule_count_message}
+          </div>
           <p style={{marginTop: 8}}>{result.summary}</p>
 
           {chartData && (
