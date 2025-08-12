@@ -74,8 +74,8 @@ export default function App() {
     doc.setFontSize(10)
     doc.text(result.summary, 14, 24)
 
-    // Tabel hasil
-    const rows = result.hasil.map(h => [h.id_kelas, h.id_matkul, h.id_dosen, h.id_ruangan, h.id_slot])
+    // Tabel hasil (readable)
+    const rows = result.hasil_readable.map(h => [h.kelas, h.matkul, h.dosen, h.ruangan, h.slot])
     autoTable(doc, {
       startY: 30,
       head: [['Kelas','Matkul','Dosen','Ruangan','Slot']],
@@ -94,7 +94,7 @@ export default function App() {
       [result.summary],
       [],
       ['Kelas','Matkul','Dosen','Ruangan','Slot'],
-      ...result.hasil.map(h => [h.id_kelas, h.id_matkul, h.id_dosen, h.id_ruangan, h.id_slot])
+      ...result.hasil_readable.map(h => [h.kelas, h.matkul, h.dosen, h.ruangan, h.slot])
     ]
     const ws = XLSX.utils.aoa_to_sheet(sheetData)
     XLSX.utils.book_append_sheet(wb, ws, 'Jadwal')
