@@ -23,3 +23,7 @@ Catatan ringkas setiap perubahan penting agar dapat dianalisis AI untuk memahami
 
 - [8923c91] Fix: add @vitejs/plugin-react to devDependencies for Vite.
   - Perbaikan dependency dev agar `npm run dev` berjalan.
+
+- [c196400] Docs: refine README Python venv command; add package-lock.json.
+  - Ubah perintah venv ke `python3 -m venv` untuk kompatibilitas.
+  - Tambahkan `frontend/package-lock.json` untuk instalasi deterministik.
