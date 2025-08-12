@@ -3,14 +3,14 @@
 Aplikasi optimasi jadwal kuliah menggunakan kombinasi CSP dan Algoritma Genetika sesuai spesifikasi pada `alur_aplikasi.md`.
 
 ### Arsitektur
-- Backend: FastAPI (Python), koneksi ke Postgres (Supabase kompatibel)
+- Backend: FastAPI (Python), koneksi ke Supabase (Postgres hosted)
 - Frontend: React + Vite (TypeScript)
 - Database: Schema dan seed tersedia di `backend/db/*.sql`
 
 ### Prasyarat
 - Python 3.10+
 - Node.js 18+
-- Akses Postgres/Supabase dan `DATABASE_URL`
+- Project Supabase (URL dan anon/service role key)
 
 ### Setup Backend
 1. Buat virtualenv dan install dependensi:
@@ -22,11 +22,12 @@ Aplikasi optimasi jadwal kuliah menggunakan kombinasi CSP dan Algoritma Genetika
 2. Salin environment:
    ```bash
    cp .env.example .env
-   # Edit .env untuk mengisi DATABASE_URL (bisa Supabase)
+   # Isi SUPABASE_URL dan SUPABASE_ANON_KEY (atau SERVICE_ROLE di server)
    ```
-3. Inisialisasi database (schema + seed):
+3. Inisialisasi database (schema + seed) di Supabase:
    ```bash
-   python scripts/init_db.py
+   # Buka Supabase Dashboard -> SQL editor
+   # Jalankan isi dari backend/db/schema.sql dan backend/db/seed.sql
    ```
 4. Jalankan API:
    ```bash

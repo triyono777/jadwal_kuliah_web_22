@@ -2,9 +2,8 @@ from __future__ import annotations
 import os
 import json
 from typing import List
-import psycopg
-from psycopg.rows import dict_row
 from dotenv import load_dotenv
+from supabase import create_client, Client
 
 from .models import (
     Dosen, Matkul, Kelas, KelasMatkul, Ruangan, SlotWaktu, DataScheduling
@@ -12,51 +11,51 @@ from .models import (
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_ANON_KEY")
 
 
-def get_connection():
-    if not DATABASE_URL:
-        raise RuntimeError("DATABASE_URL not set. Create backend/.env from .env.example")
-    return psycopg.connect(DATABASE_URL, row_factory=dict_row)
+def get_client() -> Client:
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        raise RuntimeError("SUPABASE_URL or KEY not set. Create backend/.env from .env.example")
+    return create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
 def fetch_all_data() -> DataScheduling:
-    with get_connection() as conn:
-        with conn.cursor() as cur:
-            cur.execute("SELECT id, nama, batas_sks, kesediaan, keahlian_matkul_ids FROM dosen ORDER BY id")
-            dosen_rows = cur.fetchall()
-            dosen: List[Dosen] = []
-            for row in dosen_rows:
-                kesediaan = row["kesediaan"]
-                if isinstance(kesediaan, str):
-                    try:
-                        kesediaan = json.loads(kesediaan)
-                    except Exception:
-                        kesediaan = {}
-                dosen.append(Dosen(
-                    id=row["id"],
-                    nama=row["nama"],
-                    batas_sks=row["batas_sks"],
-                    kesediaan=kesediaan or {},
-                    keahlian_matkul_ids=row["keahlian_matkul_ids"] or [],
-                ))
+    sb = get_client()
 
-            cur.execute("SELECT id, nama, sks, jenis_ruangan FROM matkul ORDER BY id")
-            matkul = [Matkul(**row) for row in cur.fetchall()]
+    def sel(table: str, select: str = "*"):
+        res = sb.table(table).select(select).execute()
+        return res.data or []
 
-            cur.execute("SELECT id, nama, jumlah_mahasiswa FROM kelas ORDER BY id")
-            kelas = [Kelas(**row) for row in cur.fetchall()]
+    dosen_rows = sel("dosen", "id,nama,batas_sks,kesediaan,keahlian_matkul_ids")
+    dosen: List[Dosen] = []
+    for row in dosen_rows:
+        kesediaan = row.get("kesediaan")
+        if isinstance(kesediaan, str):
+            try:
+                kesediaan = json.loads(kesediaan)
+            except Exception:
+                kesediaan = {}
+        dosen.append(Dosen(
+            id=row["id"],
+            nama=row["nama"],
+            batas_sks=row.get("batas_sks", 12),
+            kesediaan=kesediaan or {},
+            keahlian_matkul_ids=row.get("keahlian_matkul_ids") or [],
+        ))
 
-            cur.execute("SELECT id, id_kelas, id_matkul FROM kelas_matkul ORDER BY id")
-            kelas_matkul = [KelasMatkul(**row) for row in cur.fetchall()]
-
-            cur.execute("SELECT id, nama, jenis, kapasitas FROM ruangan ORDER BY id")
-            ruangan = [Ruangan(**row) for row in cur.fetchall()]
-
-            cur.execute("SELECT id, hari, waktu_mulai AS mulai, waktu_selesai AS selesai FROM slot_waktu ORDER BY id")
-            slot_rows = cur.fetchall()
-            slot_waktu = [SlotWaktu(**row) for row in slot_rows]
+    matkul = [Matkul(**row) for row in sel("matkul", "id,nama,sks,jenis_ruangan")]  # type: ignore[arg-type]
+    kelas = [Kelas(**row) for row in sel("kelas", "id,nama,jumlah_mahasiswa")]  # type: ignore[arg-type]
+    kelas_matkul = [KelasMatkul(**row) for row in sel("kelas_matkul", "id,id_kelas,id_matkul")]  # type: ignore[arg-type]
+    ruangan = [Ruangan(**row) for row in sel("ruangan", "id,nama,jenis,kapasitas")]  # type: ignore[arg-type]
+    slot_rows = sel("slot_waktu", "id,hari,waktu_mulai,waktu_selesai")
+    slot_waktu = [
+        SlotWaktu(
+            id=row["id"], hari=row["hari"], mulai=row["waktu_mulai"], selesai=row["waktu_selesai"]
+        )
+        for row in slot_rows
+    ]
 
     return DataScheduling(
         dosen=dosen,
