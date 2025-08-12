@@ -77,6 +77,8 @@ def generate(params: GAParams):
         pelanggaran_lunak=best_eval.pelanggaran_lunak,
         detail_keras=best_eval.detail_keras,
         detail_lunak=best_eval.detail_lunak,
+        detail_keras_readable=best_eval.detail_keras,
+        detail_lunak_readable=best_eval.detail_lunak,
     )
 
     summary = (

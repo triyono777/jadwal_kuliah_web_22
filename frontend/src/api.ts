@@ -19,6 +19,8 @@ export type EvaluateOut = {
   pelanggaran_lunak: number
   detail_keras: string[]
   detail_lunak: string[]
+  detail_keras_readable?: string[]
+  detail_lunak_readable?: string[]
 }
 
 export type GenerateResponse = {

@@ -66,6 +66,8 @@ class Evaluasi:
     pelanggaran_lunak: int
     detail_keras: List[str]
     detail_lunak: List[str]
+    detail_keras_readable: List[str]
+    detail_lunak_readable: List[str]
     fitness: float
 
 

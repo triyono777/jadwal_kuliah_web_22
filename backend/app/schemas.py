@@ -37,6 +37,8 @@ class EvaluateOut(BaseModel):
     pelanggaran_lunak: int
     detail_keras: List[str]
     detail_lunak: List[str]
+    detail_keras_readable: List[str] | None = None
+    detail_lunak_readable: List[str] | None = None
 
 
 class GenerateResponse(BaseModel):

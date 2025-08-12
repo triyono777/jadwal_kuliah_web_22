@@ -176,8 +176,8 @@ export default function App() {
           <details style={{marginTop: 8}}>
             <summary>Detail pelanggaran</summary>
             <ul>
-              {result.evaluasi.detail_keras.map((d, i) => <li key={'k'+i}>{d}</li>)}
-              {result.evaluasi.detail_lunak.map((d, i) => <li key={'l'+i}>{d}</li>)}
+              {(result.evaluasi.detail_keras_readable ?? result.evaluasi.detail_keras).map((d, i) => <li key={'k'+i}>{d}</li>)}
+              {(result.evaluasi.detail_lunak_readable ?? result.evaluasi.detail_lunak).map((d, i) => <li key={'l'+i}>{d}</li>)}
             </ul>
           </details>
 
