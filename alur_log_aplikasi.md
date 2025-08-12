@@ -38,3 +38,6 @@ Catatan ringkas setiap perubahan penting agar dapat dianalisis AI untuk memahami
 - [8004c05] UI/Backend: human-readable schedule, fitness explanation, and explicit GA params.
   - Backend: menambah `hasil_readable` (nama entitas) dan `fitness_explanation`.
   - Frontend: menampilkan jadwal readable, parameter G/N/p_m/k, dan penjelasan fitness.
+
+- [bc689cd] UX: append timestamp (tanggal_jam_menit) to export filenames.
+  - Nama file ekspor sekarang `jadwal_kuliah_YYYYMMDD_HHMM.(pdf|xlsx)` agar unik.
