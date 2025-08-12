@@ -169,6 +169,7 @@ def run_ga(
 
     fitnesses, evals = eval_pop(population)
     best = max(zip(population, evals), key=lambda x: x[1].fitness)
+    best_history: List[float] = [best[1].fitness]
 
     for _ in range(max_generations):
         new_pop: List[List[Assignment]] = []
@@ -184,6 +185,7 @@ def run_ga(
         cand_best = max(zip(population, evals), key=lambda x: x[1].fitness)
         if cand_best[1].fitness > best[1].fitness:
             best = cand_best
+        best_history.append(best[1].fitness)
 
     best_individual, best_eval = best
-    return best_individual, best_eval
+    return best_individual, best_eval, best_history

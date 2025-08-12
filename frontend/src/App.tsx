@@ -1,5 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo, useRef } from 'react'
 import { GAParams, generate, getPresets, GenerateResponse } from './api'
+import { Line } from 'react-chartjs-2'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js'
+import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
+import * as XLSX from 'xlsx'
+import { saveAs } from 'file-saver'
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
 const defaultParams: GAParams = {
   max_generations: 200,
@@ -14,6 +31,7 @@ export default function App() {
   const [error, setError] = useState<string|undefined>()
   const [result, setResult] = useState<GenerateResponse|undefined>()
   const [presets, setPresets] = useState<{G:number,N:number,p_m:number,k:number}[]>([])
+  const tableRef = useRef<HTMLTableElement|null>(null)
 
   useEffect(() => {
     getPresets().then(setPresets).catch(console.error)
@@ -29,6 +47,53 @@ export default function App() {
     } finally {
       setLoading(false)
     }
+  }
+  const chartData = useMemo(() => {
+    if (!result) return undefined
+    return {
+      labels: result.fitness_history.map((_, i) => i),
+      datasets: [{
+        label: 'Fitness terbaik',
+        data: result.fitness_history,
+        borderColor: '#2563eb',
+        backgroundColor: 'rgba(37,99,235,0.2)'
+      }]
+    }
+  }, [result])
+
+  const exportPDF = () => {
+    if (!result) return
+    const doc = new jsPDF()
+    doc.text('Laporan Jadwal Kuliah (GA + CSP)', 14, 16)
+    doc.setFontSize(10)
+    doc.text(result.summary, 14, 24)
+
+    // Tabel hasil
+    const rows = result.hasil.map(h => [h.id_kelas, h.id_matkul, h.id_dosen, h.id_ruangan, h.id_slot])
+    autoTable(doc, {
+      startY: 30,
+      head: [['Kelas','Matkul','Dosen','Ruangan','Slot']],
+      body: rows,
+    })
+
+    // Simpan
+    doc.save('jadwal_kuliah.pdf')
+  }
+
+  const exportExcel = () => {
+    if (!result) return
+    const wb = XLSX.utils.book_new()
+    const sheetData = [
+      ['Summary'],
+      [result.summary],
+      [],
+      ['Kelas','Matkul','Dosen','Ruangan','Slot'],
+      ...result.hasil.map(h => [h.id_kelas, h.id_matkul, h.id_dosen, h.id_ruangan, h.id_slot])
+    ]
+    const ws = XLSX.utils.aoa_to_sheet(sheetData)
+    XLSX.utils.book_append_sheet(wb, ws, 'Jadwal')
+    const wbout = XLSX.write(wb, { type: 'array', bookType: 'xlsx' })
+    saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'jadwal_kuliah.xlsx')
   }
 
   const applyPreset = (p: {G:number,N:number,p_m:number,k:number}) => {
@@ -88,6 +153,14 @@ export default function App() {
           <h3>Hasil</h3>
           <div>Fitness: <b>{result.evaluasi.fitness}</b></div>
           <div>Pelanggaran keras: {result.evaluasi.pelanggaran_keras} | lunak: {result.evaluasi.pelanggaran_lunak}</div>
+          <p style={{marginTop: 8}}>{result.summary}</p>
+
+          {chartData && (
+            <div style={{maxWidth: 800, marginTop: 8}}>
+              <h4>Konvergensi Fitness</h4>
+              <Line data={chartData} options={{responsive:true, plugins:{legend:{display:false}, title:{display:false}}}} />
+            </div>
+          )}
 
           <details style={{marginTop: 8}}>
             <summary>Detail pelanggaran</summary>
@@ -97,7 +170,12 @@ export default function App() {
             </ul>
           </details>
 
-          <table style={{width:'100%', marginTop: 12, borderCollapse:'collapse'}}>
+          <div style={{display:'flex', gap: 8, marginTop: 12}}>
+            <button onClick={exportPDF}>Export PDF</button>
+            <button onClick={exportExcel}>Export Excel</button>
+          </div>
+
+          <table ref={tableRef} style={{width:'100%', marginTop: 12, borderCollapse:'collapse'}}>
             <thead>
               <tr>
                 <th style={{borderBottom:'1px solid #ddd', textAlign:'left'}}>Kelas</th>

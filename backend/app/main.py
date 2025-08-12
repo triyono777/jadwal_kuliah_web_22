@@ -42,7 +42,7 @@ def generate(params: GAParams):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"DB error: {e}")
 
-    best_individual, best_eval = run_ga(
+    best_individual, best_eval, history = run_ga(
         data=data,
         max_generations=params.max_generations,
         population_size=params.population_size,
@@ -59,7 +59,19 @@ def generate(params: GAParams):
         detail_lunak=best_eval.detail_lunak,
     )
 
-    return GenerateResponse(params=params, hasil=hasil, evaluasi=evaluasi)
+    summary = (
+        f"Fitness terbaik: {best_eval.fitness}. "
+        f"Pelanggaran keras: {best_eval.pelanggaran_keras}, lunak: {best_eval.pelanggaran_lunak}. "
+        f"Parameter: G={params.max_generations}, N={params.population_size}, p_m={params.mutation_rate}, k={params.tournament_size}."
+    )
+
+    return GenerateResponse(
+        params=params,
+        hasil=hasil,
+        evaluasi=evaluasi,
+        summary=summary,
+        fitness_history=history,
+    )
 
 
 # Run with: uvicorn app.main:app --reload --port 8000

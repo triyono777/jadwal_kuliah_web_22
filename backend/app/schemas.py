@@ -30,6 +30,8 @@ class GenerateResponse(BaseModel):
     params: GAParams
     hasil: List[AssignmentOut]
     evaluasi: EvaluateOut
+    summary: str
+    fitness_history: List[float]
 
 
 class Preset(BaseModel):

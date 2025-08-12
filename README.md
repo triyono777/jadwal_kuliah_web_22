@@ -47,6 +47,7 @@ Aplikasi optimasi jadwal kuliah menggunakan kombinasi CSP dan Algoritma Genetika
 - Di UI, pilih preset parameter atau set manual: `G`, `N`, `p_m`, `k`.
 - Klik "Generate Jadwal" untuk menjalankan GA.
 - Hasil akan menampilkan fitness, ringkasan pelanggaran, dan tabel jadwal (ID referensi).
+- Hasil kini menampilkan summary (termasuk parameter), grafik konvergensi fitness, dan tombol ekspor PDF/Excel.
 - Data diambil langsung dari database sesuai schema. Edit data di DB untuk menyesuaikan.
 
 ### Catatan Implementasi

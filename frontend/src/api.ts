@@ -25,6 +25,8 @@ export type GenerateResponse = {
   params: GAParams
   hasil: AssignmentOut[]
   evaluasi: EvaluateOut
+  summary: string
+  fitness_history: number[]
 }
 
 const API_BASE = 'http://localhost:8000'
