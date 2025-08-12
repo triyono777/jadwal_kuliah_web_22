@@ -48,13 +48,18 @@ def initialize_population(data: DataScheduling, pop_size: int) -> List[List[Assi
         used_room_slot: Dict[Tuple[int, int], bool] = {}
         used_dosen_slot: Dict[Tuple[int, int], bool] = {}
         used_kelas_slot: Dict[Tuple[int, int], bool] = {}
+        dosen_load_sks: Dict[int, int] = {}
         for (id_kelas, id_matkul) in tasks:
             kelas = next(k for k in data.kelas if k.id == id_kelas)
+            mat = next(m for m in data.matkul if m.id == id_matkul)
             # candidate rooms: correct type and capacity >= class size
-            room_candidates = [r.id for r in data.ruangan if r.jenis == next(m for m in data.matkul if m.id==id_matkul).jenis_ruangan and r.kapasitas >= kelas.jumlah_mahasiswa]
+            room_candidates = [r.id for r in data.ruangan if r.jenis == mat.jenis_ruangan and r.kapasitas >= kelas.jumlah_mahasiswa]
             if not room_candidates:
                 room_candidates = domain["rooms_for_matkul"][id_matkul] or [r.id for r in data.ruangan]
-            dosen_candidates = domain["dosen_for_matkul"][id_matkul] or [d.id for d in data.dosen]
+            # prefer lecturers whose load would remain within batas_sks
+            raw_dosen_candidates = domain["dosen_for_matkul"][id_matkul] or [d.id for d in data.dosen]
+            feasible_dosen = [did for did in raw_dosen_candidates if (dosen_load_sks.get(did, 0) + mat.sks) <= next(d for d in data.dosen if d.id==did).batas_sks]
+            dosen_candidates = feasible_dosen or raw_dosen_candidates
             slot_candidates = domain["slots"][0][:]
 
             # try to find non-conflicting assignment
@@ -87,6 +92,7 @@ def initialize_population(data: DataScheduling, pop_size: int) -> List[List[Assi
             used_kelas_slot[(s, id_kelas)] = True
             used_room_slot[(s, room)] = True
             used_dosen_slot[(s, dos)] = True
+            dosen_load_sks[dos] = dosen_load_sks.get(dos, 0) + mat.sks
             individual.append(Assignment(
                 id_kelas=id_kelas,
                 id_matkul=id_matkul,

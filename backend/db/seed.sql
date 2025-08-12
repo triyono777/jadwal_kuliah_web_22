@@ -77,11 +77,18 @@ INSERT INTO slot_waktu (hari, waktu_mulai, waktu_selesai) VALUES
  ('Jumat',  '12:00', '14:00'),
  ('Jumat',  '14:00', '16:00');
 
--- 39 Dosen: nama terformat dan keahlian 3 matkul berbasis pola
+-- 39 Dosen: keahlian 3 matkul, preferensi waktu realistis (subset slot)
 INSERT INTO dosen (nama, batas_sks, kesediaan, keahlian_matkul_ids)
 SELECT 'Dosen ' || LPAD(i::text,2,'0') as nama,
        12 as batas_sks,
-       '{}'::jsonb as kesediaan,
+       (
+         -- Preferensi: untuk variasi, dosen genap suka pagi, ganjil suka siang
+         CASE WHEN (i % 2) = 0 THEN
+           '{"Senin":["08:00-10:00","10:00-12:00"],"Rabu":["08:00-10:00"],"Jumat":["08:00-10:00","10:00-12:00"]}'::jsonb
+         ELSE
+           '{"Selasa":["12:00-14:00","14:00-16:00"],"Kamis":["12:00-14:00","14:00-16:00"]}'::jsonb
+         END
+       ) as kesediaan,
        ARRAY[ ((i-1) % 24)+1,
               ((i+7-1) % 24)+1,
               ((i+13-1) % 24)+1 ]::int[] as keahlian_matkul_ids
