@@ -153,6 +153,8 @@ export default function App() {
           <h3>Hasil</h3>
           <div>Fitness: <b>{result.evaluasi.fitness}</b></div>
           <div>Pelanggaran keras: {result.evaluasi.pelanggaran_keras} | lunak: {result.evaluasi.pelanggaran_lunak}</div>
+          <div>Parameter: G={result.params.max_generations}, N={result.params.population_size}, p_m={result.params.mutation_rate}, k={result.params.tournament_size}</div>
+          <p style={{marginTop: 8}}><i>{result.fitness_explanation}</i></p>
           <p style={{marginTop: 8}}>{result.summary}</p>
 
           {chartData && (
@@ -186,13 +188,13 @@ export default function App() {
               </tr>
             </thead>
             <tbody>
-              {result.hasil.map((h, i) => (
+              {result.hasil_readable.map((h, i) => (
                 <tr key={i}>
-                  <td>{h.id_kelas}</td>
-                  <td>{h.id_matkul}</td>
-                  <td>{h.id_dosen}</td>
-                  <td>{h.id_ruangan}</td>
-                  <td>{h.id_slot}</td>
+                  <td>{h.kelas}</td>
+                  <td>{h.matkul}</td>
+                  <td>{h.dosen}</td>
+                  <td>{h.ruangan}</td>
+                  <td>{h.slot}</td>
                 </tr>
               ))}
             </tbody>

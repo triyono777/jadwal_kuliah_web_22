@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from .db import fetch_all_data
 from .ga import run_ga
 from .models import Assignment
-from .schemas import GAParams, AssignmentOut, EvaluateOut, GenerateResponse, PRESETS
+from .schemas import GAParams, AssignmentOut, AssignmentReadableOut, EvaluateOut, GenerateResponse, PRESETS
 
 load_dotenv()
 
@@ -51,6 +51,26 @@ def generate(params: GAParams):
     )
 
     hasil: List[AssignmentOut] = [AssignmentOut(**vars(a)) for a in best_individual]
+    idx = data.index_by_id()
+    hasil_readable: List[AssignmentReadableOut] = []
+    for a in best_individual:
+        kelas = idx["kelas"][a.id_kelas]
+        matkul = idx["matkul"][a.id_matkul]
+        dosen = idx["dosen"][a.id_dosen]
+        ruangan = idx["ruangan"][a.id_ruangan]
+        slot = idx["slot"][a.id_slot]
+        hasil_readable.append(AssignmentReadableOut(
+            id_kelas=kelas.id,
+            kelas=kelas.nama,
+            id_matkul=matkul.id,
+            matkul=matkul.nama,
+            id_dosen=dosen.id,
+            dosen=dosen.nama,
+            id_ruangan=ruangan.id,
+            ruangan=ruangan.nama,
+            id_slot=slot.id,
+            slot=f"{slot.hari} {slot.mulai}-{slot.selesai}",
+        ))
     evaluasi = EvaluateOut(
         fitness=best_eval.fitness,
         pelanggaran_keras=best_eval.pelanggaran_keras,
@@ -65,12 +85,20 @@ def generate(params: GAParams):
         f"Parameter: G={params.max_generations}, N={params.population_size}, p_m={params.mutation_rate}, k={params.tournament_size}."
     )
 
+    fitness_explanation = (
+        "Fitness lebih tinggi lebih baik. Dihitung sebagai 1000 - 100×(pelanggaran keras) - 10×(pelanggaran lunak). "
+        "Pelanggaran keras: konflik ruangan/dosen/kelas pada slot yang sama. "
+        "Pelanggaran lunak: kapasitas ruang kurang dan ketidaksesuaian preferensi waktu dosen."
+    )
+
     return GenerateResponse(
         params=params,
         hasil=hasil,
+        hasil_readable=hasil_readable,
         evaluasi=evaluasi,
         summary=summary,
         fitness_history=history,
+        fitness_explanation=fitness_explanation,
     )
 
 

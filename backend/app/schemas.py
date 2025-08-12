@@ -18,6 +18,19 @@ class AssignmentOut(BaseModel):
     id_slot: int
 
 
+class AssignmentReadableOut(BaseModel):
+    id_kelas: int
+    kelas: str
+    id_matkul: int
+    matkul: str
+    id_dosen: int
+    dosen: str
+    id_ruangan: int
+    ruangan: str
+    id_slot: int
+    slot: str  # e.g. "Senin 07:00-09:00"
+
+
 class EvaluateOut(BaseModel):
     fitness: float
     pelanggaran_keras: int
@@ -29,9 +42,11 @@ class EvaluateOut(BaseModel):
 class GenerateResponse(BaseModel):
     params: GAParams
     hasil: List[AssignmentOut]
+    hasil_readable: List[AssignmentReadableOut]
     evaluasi: EvaluateOut
     summary: str
     fitness_history: List[float]
+    fitness_explanation: str
 
 
 class Preset(BaseModel):

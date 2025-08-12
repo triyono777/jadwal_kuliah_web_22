@@ -24,9 +24,22 @@ export type EvaluateOut = {
 export type GenerateResponse = {
   params: GAParams
   hasil: AssignmentOut[]
+  hasil_readable: {
+    id_kelas: number
+    kelas: string
+    id_matkul: number
+    matkul: string
+    id_dosen: number
+    dosen: string
+    id_ruangan: number
+    ruangan: string
+    id_slot: number
+    slot: string
+  }[]
   evaluasi: EvaluateOut
   summary: string
   fitness_history: number[]
+  fitness_explanation: string
 }
 
 const API_BASE = 'http://localhost:8000'
