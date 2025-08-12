@@ -27,3 +27,7 @@ Catatan ringkas setiap perubahan penting agar dapat dianalisis AI untuk memahami
 - [c196400] Docs: refine README Python venv command; add package-lock.json.
   - Ubah perintah venv ke `python3 -m venv` untuk kompatibilitas.
   - Tambahkan `frontend/package-lock.json` untuk instalasi deterministik.
+
+- [b8bf601] Feature: summary, fitness convergence chart, and export (PDF/Excel).
+  - Backend mengembalikan `summary` (memuat parameter) dan `fitness_history`.
+  - Frontend menampilkan summary, grafik konvergensi (Chart.js), ekspor PDF (jsPDF) & Excel (xlsx).
