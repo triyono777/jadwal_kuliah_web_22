@@ -41,3 +41,24 @@ Catatan ringkas setiap perubahan penting agar dapat dianalisis AI untuk memahami
 
 - [bc689cd] UX: append timestamp (tanggal_jam_menit) to export filenames.
   - Nama file ekspor sekarang `jadwal_kuliah_YYYYMMDD_HHMM.(pdf|xlsx)` agar unik.
+
+- [7297b92] Export: include human-readable schedule in PDF and Excel outputs.
+  - Ekspor menyertakan jadwal readable (kelas, matkul, dosen, ruangan, slot). 
+
+- [8a7c4ae] Seed: adjust rooms capacity and clear lecturer availability to remove soft violations.
+  - Naikkan kapasitas ruangan dan kosongkan preferensi dosen agar V_soft → 0.
+
+- [fa57160] Seed: expand dataset (12 matkul, 6 kelas, 7 ruangan, 9 slot, 8 dosen, rich kelas_matkul).
+  - Dataset lebih besar untuk pengujian performa dan kualitas solusi.
+
+- [3fde448] Feature: schedule count validation (expected vs generated).
+  - Backend menghitung expected dari `kelas_matkul` dan membandingkan dengan hasil; frontend menampilkan status.
+
+- [765082d] Seed: conform to spec (39 dosen, 24 kelas, 24 matkul, 17 ruangan, Senin–Jumat 08:00–16:00, 4 slots/day).
+  - Dataset dibangkitkan dengan pola terkontrol; dosen tanpa preferensi untuk fokus pada hard constraints.
+
+- [0540b67] GA: conflict-aware init, capacity-aware rooms, elitism; readable conflicts.
+  - Inisialisasi menghindari konflik slot (ruang/dosen/kelas), room mempertimbangkan kapasitas, elitism 10%, serta pesan konflik yang mudah dibaca.
+
+- [c1c2fb4] GA: SKS-aware lecturer assignment; Seed: aktifkan preferensi waktu dosen.
+  - Inisialisasi memperhatikan batas SKS dosen; seed menambahkan `kesediaan` untuk tekanan S2.
